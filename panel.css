@@ -1,0 +1,387 @@
+/* skribbl word helper -- loaded inside the panel's shadow root, so none of this
+   can reach skribbl's own UI and none of skribbl's CSS can reach the panel. */
+
+:host { contain: layout style; }
+
+.panel {
+  --bg:     #171b24;
+  --card:   #1f2531;
+  --inset:  #0f131a;
+  --line:   #2b3342;
+  --edge:   #0a0c11;
+  --ink:    #eef1f6;
+  --ink-2:  #98a2b7;
+  --ink-3:  #646e86;
+  --accent: #6f9bff;
+  --gold:   #ffcf4d;
+
+  width: 208px;
+  box-sizing: border-box;
+  background: var(--bg);
+  border: 2px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(6, 10, 20, .45), 0 2px 6px rgba(6, 10, 20, .3);
+  color: var(--ink);
+  font: 400 12px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+}
+
+.panel * { box-sizing: border-box; }
+
+.panel button {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.panel button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------- header ---------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 29px;
+  padding: 0 7px 0 6px;
+  background: linear-gradient(#262e3d, #212836);
+  border-bottom: 1px solid var(--edge);
+  cursor: grab;
+}
+.is-dragging .head { cursor: grabbing; }
+
+.grip {
+  width: 8px;
+  height: 12px;
+  flex: none;
+  opacity: .45;
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 4px 4px;
+  color: var(--ink-2);
+}
+
+.name {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .01em;
+  color: var(--ink-2);
+}
+
+.lead {
+  display: none;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 650;
+  color: var(--gold);
+}
+.is-folded .lead { display: block; }
+.head .name + .lead:not(:empty) { margin-left: 2px; }
+
+.count {
+  margin-left: auto;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #33405c;
+  color: #cfdcff;
+  font-size: 10.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.count:empty { display: none; }
+.count.solved { background: var(--gold); color: #2a2000; }
+
+.fold {
+  flex: none;
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--ink-2);
+}
+.fold:hover { background: #333d51; color: var(--ink); }
+.fold::after {
+  content: "";
+  border: 4px solid transparent;
+  border-top-color: currentColor;
+  margin-top: 3px;
+  transition: transform .12s ease;
+}
+.is-folded .fold::after { transform: rotate(-90deg); }
+
+/* ---------- body ---------- */
+
+.body { padding: 8px; }
+.is-folded .body { display: none; }
+
+/* the hint, as letter tiles with real gaps between words */
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-bottom: 7px;
+}
+.board:empty { display: none; }
+
+.word { display: flex; flex-wrap: wrap; gap: 2px; }
+
+.tile {
+  width: 16px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: #1a212d;
+  box-shadow: inset 0 -2px 0 #465471;
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 650;
+  text-transform: lowercase;
+}
+.tile.on {
+  background: #2a2413;
+  box-shadow: inset 0 -2px 0 #6b571c;
+  color: var(--gold);
+}
+
+.state {
+  padding: 2px 1px 4px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.state:empty { display: none; }
+
+.evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 7px;
+}
+.evidence:empty { display: none; }
+
+.pill {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #232b3a;
+  color: var(--ink-2);
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+.pill.hot { background: #2f2814; color: var(--gold); }
+
+.sect {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 1px 5px;
+}
+.label {
+  flex: 1;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.label:empty { display: none; }
+
+.narrow {
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--ink-3);
+  font-size: 10.5px;
+}
+.narrow:hover { background: #2b3342; color: var(--ink); }
+
+/* ---------- the picks ---------- */
+
+.pick {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 3px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  overflow: hidden;
+  transition: border-color .12s ease, background .12s ease;
+}
+.pick:hover { border-color: #47547040; background: #252d3c; }
+.pick.lead { background: #232b3c; border-color: #3d4869; }
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 11px 1fr auto;
+  align-items: baseline;
+  gap: 1px 5px;
+  padding: 4px 3px 5px 6px;
+  text-align: left;
+}
+.rank {
+  font-size: 10px;
+  font-weight: 650;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.w {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .005em;
+}
+.pc {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.lead .pc { color: var(--gold); }
+.why {
+  grid-column: 2 / -1;
+  font-size: 10px;
+  line-height: 1.25;
+  color: var(--ink-2);
+}
+.why:empty { display: none; }
+
+.go {
+  flex: none;
+  width: 24px;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid var(--line);
+  color: var(--ink-3);
+}
+.go::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 4px solid transparent;
+  border-left-color: currentColor;
+  margin-left: 2px;
+}
+.go:hover { background: var(--accent); color: #0d1424; }
+
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #1a2130;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: #4a5878;
+  transition: width .18s ease;
+}
+.lead .bar i { background: var(--gold); }
+
+/* ---------- the rest ---------- */
+
+.rest {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  max-height: 104px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.rest:not(:empty) {
+  margin-top: 6px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+}
+.rest::-webkit-scrollbar { width: 7px; }
+.rest::-webkit-scrollbar-thumb { background: #333d51; border-radius: 4px; }
+.rest::-webkit-scrollbar-track { background: transparent; }
+
+.chip {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #232a37;
+  border: 1px solid transparent;
+  font-size: 11px;
+  color: #d7deec;
+  transition: background .1s ease, color .1s ease;
+}
+.chip:hover { background: var(--accent); color: #0d1424; }
+.chip.used { opacity: .35; }
+.chip.learned { border-color: #3c6b52; }
+.chip mark {
+  background: none;
+  color: var(--gold);
+  font-weight: 650;
+}
+.chip:hover mark { color: #0d1424; }
+
+.more {
+  width: 100%;
+  padding-top: 2px;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+
+.foot {
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 9.5px;
+}
+.foot:empty { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel *, .panel *::after { transition: none !important; }
+}
+
+/* even odds: the label carries the number, so drop the per-row noise */
+.is-flat .pc,
+.is-flat .bar { display: none; }
+
+/* a long word keeps to one line by shrinking its tiles */
+.board[data-dense="yes"] .tile {
+  width: 13px;
+  height: 18px;
+  font-size: 11px;
+  border-radius: 3px;
+}
+
+/* the long tail of candidates, folded away until asked for */
+.allbtn {
+  width: 100%;
+  margin-top: 1px;
+  padding: 3px 0;
+  border-radius: 5px;
+  color: var(--ink-3);
+  font-size: 10px;
+}
+.allbtn:hover { background: #232b3a; color: var(--ink-2); }
+.allbtn[hidden] { display: none; }
+.rest[hidden] { display: none; }
+
+/* a word the dictionary supplied, not one skribbl is known to use */
+.chip.dict { border-style: dashed; border-color: #44506a; }
+.pick.fromdict .w { color: #c2cbdd; }
+.pill.dict { background: #2a2536; color: #b7a8d8; }
+.foot span { display: block; }
+.foot span + span { opacity: .75; }

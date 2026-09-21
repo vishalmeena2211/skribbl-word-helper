@@ -1,0 +1,147 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>skribbl helper harness</title>
+<!--
+  Loads the REAL extension files (words.js, content.js, panel.css) against a
+  reproduction of skribbl's DOM. The markup and the hint-building below are
+  transcribed from skribbl.io/js/game.js:
+      pa(lengths, hidden)  builds the hint row + .word-length
+      ma(pairs)            uncovers hints
+      Te(name,text,color)  builds a chat <p> with an inline CSS-variable colour
+  Open this, drive the buttons, watch the panel.
+-->
+<style>
+  body { margin:0; font:13px system-ui,sans-serif; background:#7bb0e8; color:#111; }
+  #rig { width:940px; max-width:100%; margin:0 auto; padding:14px; }
+  /* mirrors skribbl's own desktop grid from css/style.css:
+       grid-template-areas: "bar bar bar" "players canvas chat"
+       grid-template-columns: min-content auto auto   (players 200px, chat 300px) */
+  #game-wrapper { width:max-content; max-width:100%; margin:0 auto; }
+  #game { display:grid; gap:8px; width:max-content;
+          grid-template-areas:"bar bar bar" "players canvas chat";
+          grid-template-columns:200px auto 300px; }
+  #game-word { grid-area:bar; }
+  #game-players { grid-area:players; width:200px; height:360px; background:#fff;
+                  border:1px solid #9bb; border-radius:8px; padding:6px; font-size:12px; }
+  #game-canvas { grid-area:canvas; }
+  #game-chat { grid-area:chat; width:300px; display:flex; flex-direction:column; }
+  #game-canvas canvas { display:block; width:520px; height:360px;
+                        background:#fff; border:1px solid #9bb; border-radius:8px; }
+  .chat-content { flex:1; }
+  fieldset { border:1px solid #5a86b8; border-radius:8px; margin:0 0 10px; background:#eaf2fb; }
+  legend { font-weight:600; padding:0 6px; }
+  button, input { font:inherit; padding:3px 7px; }
+  #game-word { display:flex; gap:10px; align-items:center; background:#2a2f3a; color:#fff; padding:8px; border-radius:6px; }
+  #game-word .hints .container { display:flex; gap:3px; align-items:baseline; }
+  .hint { font-family:monospace; font-size:17px; min-width:11px; text-align:center; }
+  .hint.uncover { color:#ffd54a; }
+  .word-length { font-size:10px; opacity:.6; margin-left:6px; }
+  .chat-content { height:130px; overflow:auto; background:#fff; border:1px solid #9bb; border-radius:6px; padding:4px 6px; }
+  .chat-content p { margin:1px 0; }
+  .chat-content b { font-weight:700; }
+  .reveal { margin-top:6px; font-size:12px; }
+</style>
+
+<div id="rig">
+  <fieldset><legend>the game</legend>
+    <div id="game-wrapper"><div id="game">
+      <div id="game-word">
+        <div class="description">GUESS THIS</div>
+        <div class="word" style="display:none"></div>
+        <div class="hints"><div class="container"></div></div>
+      </div>
+      <div id="game-players"><b>Players</b><div>You · 120</div><div>Amy · 90</div></div>
+      <div id="game-canvas">
+        <canvas width="800" height="600"></canvas>
+        <div class="overlay-content">
+          <div class="reveal">The word was <span class="word"></span></div>
+        </div>
+      </div>
+      <div id="game-chat">
+        <div class="chat-content"></div>
+        <form class="chat-form"><input type="text" placeholder="Type your guess here..." size="40"></form>
+      </div>
+    </div></div>
+  </fieldset>
+
+  <fieldset><legend>drive it</legend>
+    <div style="margin-bottom:6px">
+      word: <input id="c-word" value="hot dog" size="18">
+      <button id="c-start">start round</button>
+      <button id="c-reveal">reveal a letter</button>
+      <button id="c-hidden">word-hidden mode</button>
+      <button id="c-draw">I'm drawing</button>
+    </div>
+    <div style="margin-bottom:6px">
+      <input id="c-who" value="Amy" size="6">
+      guesses <input id="c-guess" value="hip hop" size="14">
+      <button id="c-say">wrong guess</button>
+      <button id="c-close">…is close!</button>
+      <button id="c-gchat">as guess-chat</button>
+    </div>
+    <div><button id="c-end">end round (reveal)</button> <button id="c-wipe">wipe learned words</button></div>
+  </fieldset>
+</div>
+
+<script>
+/* stand-in for chrome.storage.local, backed by localStorage */
+window.chrome = { runtime: { getURL: (p) => '../' + p }, storage: { local: {
+  get(keys, cb) { const o = {}; for (const k of keys) { try { const v = localStorage.getItem('skh_' + k); if (v) o[k] = JSON.parse(v); } catch (e) {} } cb(o); },
+  set(obj) { for (const k in obj) localStorage.setItem('skh_' + k, JSON.stringify(obj[k])); },
+} } };
+
+const $$ = (s) => document.querySelector(s);
+const el = (cls, txt) => { const d = document.createElement('div'); cls.split(' ').forEach((c) => d.classList.add(c)); if (txt !== undefined) d.textContent = txt; return d; };
+const N = [$$('#game-word .description'), $$('#game-word .word'), $$('#game-word .hints .container')];
+let ANSWER = '';
+
+function pa(lengths, hidden) {                      // game.js pa()
+  let n = lengths.length - 1; for (const l of lengths) n += l;
+  if (hidden) n = 3;
+  N[0].textContent = hidden ? 'WORD HIDDEN' : 'GUESS THIS';
+  N[1].style.display = 'none'; N[2].style.display = ''; N[2].innerHTML = ''; N[2].hints = [];
+  for (let a = 0; a < n; a++) { N[2].hints[a] = el('hint', hidden ? '?' : '_'); N[2].appendChild(N[2].hints[a]); }
+  if (!hidden) N[2].appendChild(el('word-length', lengths.join(' ')));
+}
+function ma(pairs) {                                // game.js ma()
+  for (const [i, ch] of pairs) { N[2].hints[i].textContent = ch; N[2].hints[i].classList.add('uncover'); }
+}
+function Te(name, text, colorVar, isSystem) {       // game.js Te()
+  const p = document.createElement('p'), b = document.createElement('b'), s = document.createElement('span');
+  b.textContent = isSystem ? name : name + ': ';
+  p.appendChild(b); p.style.color = 'var(--COLOR_CHAT_TEXT_' + colorVar + ')';
+  s.textContent = text; p.appendChild(s);
+  const c = $$('#game-chat .chat-content'); c.appendChild(p); c.scrollTop = c.scrollHeight;
+  return p;
+}
+
+$$('#c-start').onclick = () => {
+  ANSWER = $$('#c-word').value.trim().toLowerCase();
+  $$('#game-chat .chat-content').innerHTML = '';
+  $$('#game-canvas .overlay-content .reveal .word').textContent = '';
+  pa(ANSWER.split(' ').map((w) => w.length), false);
+};
+$$('#c-reveal').onclick = () => {
+  const hidden = N[2].hints.map((h, i) => i).filter((i) => N[2].hints[i].textContent === '_' && ANSWER[i] !== ' ');
+  if (hidden.length) { const i = hidden[Math.floor(Math.random() * hidden.length)]; ma([[i, ANSWER[i]]]); }
+};
+$$('#c-hidden').onclick = () => pa([3], true);
+$$('#c-draw').onclick = () => { N[1].style.display = ''; N[1].textContent = $$('#c-word').value; N[2].style.display = 'none'; };
+$$('#c-say').onclick = () => Te($$('#c-who').value, $$('#c-guess').value.trim().toLowerCase(), 'BASE', false);
+$$('#c-gchat').onclick = () => Te($$('#c-who').value, $$('#c-guess').value.trim().toLowerCase(), 'GUESSCHAT', false);
+$$('#c-close').onclick = () => Te($$('#c-who').value + ' is close!', '', 'CLOSE', true);
+$$('#c-end').onclick = () => { $$('#game-canvas .overlay-content .reveal .word').textContent = ANSWER; };
+$$('#c-wipe').onclick = () => { localStorage.clear(); location.reload(); };
+
+// the real guess box: a wrong guess echoes into chat, exactly like the game
+$$('#game-chat form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const i = $$('#game-chat form input'), v = i.value.trim();
+  if (!v) return;
+  if (v.toLowerCase() === ANSWER) Te('You guessed the word!', '', 'JOIN', true);
+  else Te('You', v.toLowerCase(), 'BASE', false);
+  i.value = '';
+});
+</script>
+<script src="../words.js"></script>
+<script src="../content.js"></script>

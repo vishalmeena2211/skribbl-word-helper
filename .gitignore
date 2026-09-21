@@ -1,0 +1,6 @@
+.DS_Store
+*.swp
+*.zip
+
+# downloaded dictionary sources, cached outside the repo by tools/build-words.py
+/tmp/

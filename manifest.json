@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "skribbl word helper",
+  "version": "1.2.0",
+  "description": "Filters skribbl.io's word list against the live hint pattern, ranks what is left using the round's own chat evidence, and falls back to a dictionary in custom-word rooms.",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://skribbl.io/*"
+      ],
+      "js": [
+        "words.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "panel.css",
+        "words-extra.json"
+      ],
+      "matches": [
+        "https://skribbl.io/*"
+      ]
+    }
+  ]
+}
