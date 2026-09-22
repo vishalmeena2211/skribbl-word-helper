@@ -281,16 +281,28 @@ disagrees with itself on two rows.
 
 ```
 manifest.json          MV3 manifest, content script on https://skribbl.io/*
+icons/                 extension icons (16/32/48/128)
 words.js               generated: skribbl's own list (bundled)
 words-extra.json       generated: dictionary tiers (fetched on demand)
 content.js             hint parsing, matching, panel
 panel.css              panel styles, loaded into the shadow root
 tools/build-words.py   sources -> words.js + words-extra.json
 tools/sources/         committed skribbl word-list scrapes
+docs/STORE-LISTING.md  Chrome Web Store submission copy and checklist
 tools/test-rank.js     tests the ranking against the real content.js
 tools/harness.html     the extension running against a replica of skribbl's DOM
                        and its real desktop grid, for checking placement
 ```
+
+## Publishing to the Chrome Web Store
+
+`docs/STORE-LISTING.md` has the listing copy, permission justifications and
+privacy declarations ready to paste, plus the packaging command. The store
+assets are `icons/icon128.png` and `docs/store-screenshot.png` (1280×800).
+
+Note that skribbl's own report dialog lists *"Botting / Cheating"* as a reason,
+so a store listing carries some chance of rejection or later removal. Loading
+the unpacked extension from this repo avoids that entirely.
 
 ## Credits
 
