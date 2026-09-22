@@ -4,6 +4,12 @@ A Chrome extension (Manifest V3) for [skribbl.io](https://skribbl.io) that reads
 the hint row the game already shows you and tells you which words still fit —
 live, as letters are revealed.
 
+<img src="docs/panel.png" alt="The panel mid-round: the hint shown as letter tiles with two letters revealed, pills reading 'close to hot dot' and '1 ruled out', and 'hot dog' ranked first at 99% because it is one letter off another player's guess" width="244">
+
+*Two letters revealed, another player's near miss called `close` by the server,
+and the answer ranked at 99%. Rendered from the harness in `tools/`, which runs
+the real extension against a reproduction of skribbl's DOM.*
+
 The interesting part isn't the pattern matching. It's that **skribbl picks its
 word uniformly at random**, so among the words that fit there is no "more
 likely" — unless the round itself tells you more. It does, twice, and both
