@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="600" viewBox="0 0 1920 600" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#171b24"/><stop offset="1" stop-color="#0f131a"/></linearGradient>
+  </defs>
+  <rect width="1920" height="600" fill="url(#bg)"/>
+  <!-- faint underscore texture -->
+  <g fill="#ffffff" opacity="0.04" font-size="30" font-weight="700">
+    <text x="60" y="80">_ _ _</text><text x="520" y="130">_ _</text><text x="860" y="60">_ _ _ _</text><text x="1480" y="90">_ _</text><text x="1760" y="200">_ _ _</text><text x="1640" y="560">_ _</text><text x="110" y="580">_ _ _ _</text><text x="980" y="585">_ _</text>
+  </g>
+  <!-- title -->
+  <text x="120" y="190" font-size="92" font-weight="700" fill="#eef1f6" letter-spacing="-2">skribbl word helper</text>
+  <text x="124" y="252" font-size="34" fill="#eef1f6" opacity="0.85">Reads the hint row skribbl already shows you, and ranks the words that still fit from the round's own chat.</text>
+
+  <g transform="translate(120,298)">
+    <!-- captions -->
+    <g font-size="20" fill="#eef1f6" opacity="0.7">
+      <text x="0" y="-12">what the game shows</text>
+      <text x="700" y="-12">what the panel shows</text>
+    </g>
+
+    <!-- the hint row -->
+    <rect x="0" y="0" width="520" height="92" rx="10" fill="#2a2f3a"/>
+    <text x="18" y="38" font-size="14" fill="#ffffff" opacity="0.6" letter-spacing="1">GUESS THIS</text>
+    <g font-size="30" font-weight="700" fill="#ffffff">
+      <text x="140" y="60">_</text><text x="186" y="60">_</text><text x="232" y="60" fill="#ffd54a">a</text><text x="278" y="60">_</text><text x="324" y="60">_</text>
+    </g>
+    <text x="372" y="58" font-size="16" fill="#ffffff" opacity="0.5">5</text>
+    <circle cx="474" cy="46" r="22" fill="#ffffff" opacity="0.12"/>
+    <text x="474" y="52" font-size="18" font-weight="700" fill="#ffffff" text-anchor="middle">47</text>
+
+    <!-- the chat -->
+    <rect x="0" y="108" width="520" height="182" rx="10" fill="#ffffff"/>
+    <g font-size="20" fill="#1b1f27">
+      <text x="18" y="142"><tspan font-weight="700">Amy:</tspan> beach</text>
+      <text x="18" y="174"><tspan font-weight="700">Bob:</tspan> shark</text>
+      <text x="18" y="206" font-weight="700" fill="#1f9a4c">Bob is close!</text>
+    </g>
+    <rect x="12" y="232" width="496" height="42" rx="6" fill="#ffffff" stroke="#9bb3c8"/>
+    <text x="26" y="259" font-size="18" fill="#8a94a6">Type your guess here...</text>
+
+    <!-- arrow -->
+    <g stroke="#6f9bff" stroke-width="3" fill="none">
+      <line x1="546" y1="150" x2="666" y2="150"/>
+      <polyline points="652,138 668,150 652,162"/>
+    </g>
+    <text x="607" y="132" font-size="15" fill="#6f9bff" text-anchor="middle">reads the page</text>
+    <text x="607" y="180" font-size="15" fill="#eef1f6" opacity="0.6" text-anchor="middle">no network, no account</text>
+
+    <!-- the panel -->
+    <rect x="700" y="0" width="300" height="290" rx="12" fill="#171b24" stroke="#0a0c11" stroke-width="2"/>
+    <rect x="700" y="0" width="300" height="34" rx="12" fill="#232a38"/>
+    <rect x="700" y="22" width="300" height="12" fill="#232a38"/>
+    <line x1="700" y1="34" x2="1000" y2="34" stroke="#0a0c11"/>
+    <g fill="#98a2b7"><circle cx="716" cy="13" r="1.6"/><circle cx="716" cy="18" r="1.6"/><circle cx="716" cy="23" r="1.6"/><circle cx="721" cy="13" r="1.6"/><circle cx="721" cy="18" r="1.6"/><circle cx="721" cy="23" r="1.6"/></g>
+    <text x="732" y="23" font-size="15" font-weight="700" fill="#eef1f6">word helper</text>
+    <rect x="928" y="7" width="36" height="21" rx="10" fill="#2b3a5c"/>
+    <text x="946" y="22" font-size="13" font-weight="700" fill="#eef1f6" text-anchor="middle">64</text>
+    <text x="984" y="22" font-size="12" fill="#eef1f6" text-anchor="middle">▼</text>
+
+    <!-- tiles -->
+    <g>
+      <rect x="714" y="46" width="30" height="34" rx="5" fill="#0f131a" stroke="#2b3342"/>
+      <rect x="750" y="46" width="30" height="34" rx="5" fill="#0f131a" stroke="#2b3342"/>
+      <rect x="786" y="46" width="30" height="34" rx="5" fill="#3d3212" stroke="#ffcf4d"/>
+      <text x="801" y="70" font-size="20" font-weight="700" fill="#ffcf4d" text-anchor="middle">a</text>
+      <rect x="822" y="46" width="30" height="34" rx="5" fill="#0f131a" stroke="#2b3342"/>
+      <rect x="858" y="46" width="30" height="34" rx="5" fill="#0f131a" stroke="#2b3342"/>
+    </g>
+    <!-- pills -->
+    <rect x="714" y="90" width="118" height="22" rx="11" fill="#3d3212"/>
+    <text x="773" y="105" font-size="13" fill="#ffcf4d" text-anchor="middle">close to shark</text>
+    <rect x="838" y="90" width="90" height="22" rx="11" fill="#262d3b"/>
+    <text x="883" y="105" font-size="13" fill="#98a2b7" text-anchor="middle">2 ruled out</text>
+    <text x="714" y="134" font-size="12" font-weight="700" fill="#98a2b7" letter-spacing="2">MOST LIKELY</text>
+    <!-- picks -->
+    <rect x="714" y="142" width="272" height="42" rx="7" fill="#1f2531" stroke="#6f9bff"/>
+    <text x="724" y="169" font-size="14" fill="#646e86">1</text>
+    <text x="740" y="162" font-size="18" font-weight="700" fill="#ffcf4d">spark</text>
+    <text x="740" y="177" font-size="11" fill="#98a2b7">1 letter off "shark"</text>
+    <text x="946" y="166" font-size="15" font-weight="700" fill="#ffcf4d" text-anchor="end">44%</text>
+    <text x="972" y="167" font-size="12" fill="#ffcf4d">▶</text>
+    <rect x="715" y="181" width="120" height="2" fill="#ffcf4d"/>
+    <rect x="714" y="192" width="272" height="42" rx="7" fill="#1f2531" stroke="#2b3342"/>
+    <text x="724" y="219" font-size="14" fill="#646e86">2</text>
+    <text x="740" y="214" font-size="18" font-weight="700" fill="#eef1f6">chalk</text>
+    <text x="740" y="230" font-size="11" fill="#98a2b7">2 letters off "shark"</text>
+    <text x="946" y="216" font-size="15" font-weight="700" fill="#eef1f6" text-anchor="end">7%</text>
+    <text x="972" y="217" font-size="12" fill="#eef1f6">▶</text>
+    <rect x="714" y="242" width="272" height="42" rx="7" fill="#1f2531" stroke="#2b3342"/>
+    <text x="724" y="269" font-size="14" fill="#646e86">3</text>
+    <text x="740" y="264" font-size="18" font-weight="700" fill="#eef1f6">scarf</text>
+    <text x="740" y="280" font-size="11" fill="#98a2b7">2 letters off "shark"</text>
+    <text x="946" y="266" font-size="15" font-weight="700" fill="#eef1f6" text-anchor="end">7%</text>
+    <text x="972" y="267" font-size="12" fill="#eef1f6">▶</text>
+
+    <!-- side note: how 44% came about -->
+    <g font-size="20" fill="#eef1f6" opacity="0.85">
+      <text x="1040" y="30">66 words on skribbl's list fit <tspan font-weight="700">_ _ a _ _</tspan></text>
+      <text x="1040" y="72">beach and shark were typed in chat, so both are wrong</text>
+      <text x="1040" y="114">"Bob is close!" puts the answer 1 or 2 letters from <tspan font-weight="700">shark</tspan></text>
+      <text x="1040" y="156"><tspan font-weight="700">spark</tspan> is 1 letter off: weight ×40. Seven words are 2 off: ×6</text>
+      <text x="1040" y="198">the other 56 keep ×0.15, so spark shows <tspan font-weight="700">44%</tspan>, never 100%</text>
+      <text x="1040" y="240">with no evidence at all the panel says <tspan font-weight="700">even odds, 1 in 66</tspan></text>
+      <text x="1040" y="282" opacity="0.7">2,567 words from skribbl's own list · Manifest V3 · storage permission only</text>
+    </g>
+  </g>
+</svg>
